@@ -6,7 +6,8 @@ import cookielib
 import time
 from extlibs.MTool import MTool
 
-teamCount = 1 #nba球队数量
+startTeam = 3
+teamCount = 30 #nba球队数量
 startYear = 2011
 endYear	  = 2014
 
@@ -42,7 +43,7 @@ def start():
 	# urllib2.install_opener(opener)
 
 
-	for x in xrange(1,teamCount+1):
+	for x in xrange(startTeam,teamCount+1):
 		for y in xrange(startYear, endYear+1):
 			for z in xrange(1,13):
 				downloadData(x, y, z)
@@ -51,29 +52,3 @@ def start():
 
 if __name__ == '__main__':
 	start()
-
-	'''启用cookie'''
-	# cj = cookielib.CookieJar()
-	# opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
-	# urllib2.install_opener(opener)
-
-	# years = 2013
-	# months = '02'
-	# teams = 7 
-	# downloadData(5, 2012, 4)
-
-	# time.sleep(2)
-
-	# downloadData(5, 2012, 10)
-
-
-	# URL = 'http://nba.sports.sina.com.cn/team_match.php?month=1&years=%d&months=%s&teams=%d' %(years, months, teams)
-
-	# print 'URL----',URL
-	# html = urllib2.urlopen(URL).read()
-	# months = int(months)
-
-	# m = MTool()
-	# name = u'%d年-%d月.html' %(years, months)
-	# path = '%d/' %teams
-	# m.save(name, html, True, path)
