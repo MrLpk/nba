@@ -7,6 +7,7 @@ Created on 2013-8-27
 import urllib2
 import os
 import json
+import re
 
 class MTool:
     
@@ -18,12 +19,14 @@ class MTool:
         except Exception:
             return False
         
-    def save(self, filename, contents, reNew = True, path = ''):
+    def save(self, filename, contents, reNew = True, path = '', path2 = ''):
         '''保存文件，参数:文件名、内容、是否覆盖更新、路径'''
         if not path == '':
             if not os.path.isdir(path):
                 os.mkdir(path)
-            filename = path + filename
+            if not os.path.isdir(path + path2):
+                os.mkdir(path + path2)
+            filename = path + path2 + filename
         if os.path.exists(filename):
             if not reNew:
                 print 'You already have ' + filename
