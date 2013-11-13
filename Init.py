@@ -6,13 +6,13 @@ import cookielib
 import time
 from extlibs.MTool import MTool
 
-startTeam = 3
+startTeam = 1
 teamCount = 30 #nba球队数量
 startYear = 2011
 endYear	  = 2014
 
 def downloadData(teams, years, months):
-
+	# time.sleep(1)
 	strMonth = ''
 	if months < 10:
 		strMonth = '0%s' %months
