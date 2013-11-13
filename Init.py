@@ -45,7 +45,7 @@ def downloadMatchDate(years, months):
 	html = urllib2.urlopen(URL).read()
 
 	m = MTool()
-	name = u'%d年-%d月.html' %(years, months)
+	name = u'%d-%d.html' %(years, months)
 	if not os.path.isdir('match/'):
 		os.mkdir('match/')
 	path = 'match/date/'
@@ -55,7 +55,7 @@ def downloadMatchDate(years, months):
 def downloadMatchResult(years):
 	
 	for x in xrange(1, 2):
-		_path = u'match/date/%d年-%d月.html' %(years, x)
+		_path = u'match/date/%d/%d-%d.html' %(years, years, x)
 		f = open(_path, 'r').read()
 		print 'f = /n', f
 
