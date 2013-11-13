@@ -57,7 +57,11 @@ def downloadMatchResult(years):
 	for x in xrange(1, 2):
 		_path = u'match/date/%d/%d-%d.html' %(years, years, x)
 		f = open(_path, 'r').read()
-		print 'f = /n', f
+		key1 = '<td width="90" height="25">(.*)</td>'
+		r1 = re.findall(key1, f)
+		print 'lll--%d' %len(r1)
+		for y in r1:
+			print y
 
 def start():
 	if downTeamData:
