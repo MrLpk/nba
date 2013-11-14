@@ -9,8 +9,8 @@ from extlibs.MTool import MTool
 
 startTeam = 1
 teamCount = 30 #nba球队数量
-startYear = 2011
-endYear	  = 2014
+startYear = 2012
+endYear	  = 2012
 downTeamData = False
 downMatchDate = False
 downMatchResult = True
@@ -41,6 +41,7 @@ def downloadMatchDate(years, months):
 	else:
 		strMonth = '%s' %months
 	URL = 'http://nba.sports.sina.com.cn/match_result.php?day=0&years=%d&months=%s&teams=' %(years, strMonth)
+	
 
 	html = urllib2.urlopen(URL).read()
 
@@ -53,15 +54,41 @@ def downloadMatchDate(years, months):
 	m.save(name, html, True, path, path2)
 
 def downloadMatchResult(years):
-	
-	for x in xrange(1, 2):
+
+	INDEX = 'http://nba.sports.sina.com.cn/look_scores.php?id='
+	m = MTool();
+
+	if not os.path.isdir('match/scores/'):
+		os.mkdir('match/scores/')
+
+	if not os.path.isdir('match/scores/%d/' %years):
+		os.mkdir('match/scores/%d/' %years)
+
+	for x in xrange(1, 13):
+
+		print 'sleep 10 second...'
+		time.sleep(10)
+
 		_path = u'match/date/%d/%d-%d.html' %(years, years, x)
 		f = open(_path, 'r').read()
-		key1 = '<td width="90" height="25">(.*)</td>'
+		# key1 = '<td width="90" height="25">(.*)</td>'
+		key1 = '<a href="look_scores\.php\?id=(.*)" target="_blank">'
+
 		r1 = re.findall(key1, f)
-		print 'lll--%d' %len(r1)
+		
+		i = 1
 		for y in r1:
-			print y
+			_url = INDEX + y
+			html = urllib2.urlopen(_url).read()
+			name = '%s.html' %i
+			path = 'match/scores/%d/%d/' %(years, x)
+			m.save(name, html, False, path)
+
+			i+=1
+			# break
+
+
+		# print 'lll--%d' %len(r1)
 
 def start():
 	if downTeamData:
