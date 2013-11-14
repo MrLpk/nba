@@ -9,8 +9,8 @@ from extlibs.MTool import MTool
 
 startTeam = 1
 teamCount = 30 #nba球队数量
-startYear = 2012
-endYear	  = 2012
+startYear = 2013
+endYear	  = 2013
 downTeamData = False
 downMatchDate = False
 downMatchResult = True
@@ -64,7 +64,7 @@ def downloadMatchResult(years):
 	if not os.path.isdir('match/scores/%d/' %years):
 		os.mkdir('match/scores/%d/' %years)
 
-	for x in xrange(12, 13):
+	for x in xrange(1, 13):
 
 		# print 'sleep 10 second...'
 		# time.sleep(10)
