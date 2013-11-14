@@ -64,10 +64,10 @@ def downloadMatchResult(years):
 	if not os.path.isdir('match/scores/%d/' %years):
 		os.mkdir('match/scores/%d/' %years)
 
-	for x in xrange(1, 13):
+	for x in xrange(3, 13):
 
-		print 'sleep 10 second...'
-		time.sleep(10)
+		# print 'sleep 10 second...'
+		# time.sleep(10)
 
 		_path = u'match/date/%d/%d-%d.html' %(years, years, x)
 		f = open(_path, 'r').read()
