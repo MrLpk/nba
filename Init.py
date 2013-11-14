@@ -64,7 +64,7 @@ def downloadMatchResult(years):
 	if not os.path.isdir('match/scores/%d/' %years):
 		os.mkdir('match/scores/%d/' %years)
 
-	for x in xrange(3, 13):
+	for x in xrange(12, 13):
 
 		# print 'sleep 10 second...'
 		# time.sleep(10)
