@@ -64,7 +64,7 @@ def downloadMatchResult(years):
 	if not os.path.isdir('match/scores/%d/' %years):
 		os.mkdir('match/scores/%d/' %years)
 
-	for x in xrange(1, 13):
+	for x in xrange(2, 13):
 
 		# print 'sleep 10 second...'
 		# time.sleep(10)
@@ -78,11 +78,15 @@ def downloadMatchResult(years):
 		
 		i = 1
 		for y in r1:
-			_url = INDEX + y
-			html = urllib2.urlopen(_url).read()
 			name = '%s.html' %i
 			path = 'match/scores/%d/%d/' %(years, x)
-			m.save(name, html, False, path)
+			filename = path + name
+			if not os.path.exists(filename):
+				_url = INDEX + y
+				html = urllib2.urlopen(_url).read()
+				m.save(name, html, False, path)
+			else:
+				print 'You already have ' + filename
 
 			i+=1
 			# break
