@@ -9,11 +9,12 @@ from extlibs.MTool import MTool
 
 startTeam = 1
 teamCount = 30 #nba球队数量
-startYear = 2013
-endYear	  = 2013
+startYear = 2011
+endYear	  = 2011
 downTeamData = False
 downMatchDate = False
-downMatchResult = True
+downMatchResult = False
+isCreatePlayer = True
 
 def downloadTeamData(teams, years, months):
 	# time.sleep(1)
@@ -94,6 +95,32 @@ def downloadMatchResult(years):
 
 		# print 'lll--%d' %len(r1)
 
+def createPlayer():
+	path = 'match/scores/'
+
+	for y in os.listdir(path):
+		_pathY = path + y + '/'
+		for m in xrange(1, 13):
+			_pathM = _pathY + str(m) + '/'
+			if os.path.isdir(_pathM):
+				for i in xrange(1, len(os.listdir(_pathM))+1):
+					_fileI = _pathM + str(i) + '.html'
+					# print _fileI
+
+					_fileContent = open(_fileI, 'r').read()
+					# print _fileContent
+
+					# _key = '''<td height="20"><a href="player_one\.php\?id=(\d*)" target="_blank">([\d\D]*)</td></tr>'''
+					_key = '<table width="702" border="0" align="center" cellpadding="0" cellspacing="1" class="text">([\d\D]*)</table></td></tr>'
+					_result = re.findall(_key, _fileContent)
+
+					print _result
+					break
+			break
+		break
+	return 
+
+
 def start():
 	if downTeamData:
 		for x in xrange(startTeam,teamCount+1):
@@ -110,6 +137,9 @@ def start():
 		for x in xrange(startYear, endYear+1):
 			downloadMatchResult(x)
 	# print html
+
+	if isCreatePlayer:
+		createPlayer()
 
 if __name__ == '__main__':
 	start()
