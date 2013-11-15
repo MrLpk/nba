@@ -110,11 +110,18 @@ def createPlayer():
 					_fileContent = open(_fileI, 'r').read()
 					# print _fileContent
 
-					# _key = '''<td height="20"><a href="player_one\.php\?id=(\d*)" target="_blank">([\d\D]*)</td></tr>'''
-					_key = '<table width="702" border="0" align="center" cellpadding="0" cellspacing="1" class="text">([\d\D]*)</table></td></tr>'
+					_key = '''<td height="20"><a href="player_one\.php\?id=(\d*)" target="_blank">([\d\D]{1,250})</tr>'''
+					# _key = '<table width="702" border="0" align="center" cellpadding="0" cellspacing="1" class="text">([\d\D]*)</table></td></tr>'
 					_result = re.findall(_key, _fileContent)
 
-					print _result
+					for r in _result:
+						print r[0],r[1]
+
+						_keyName = '([\w]*)</a></td>'
+						_rName = re.findall(_keyName, r[1])
+						print _rName
+						break
+					
 					break
 			break
 		break
