@@ -5,6 +5,7 @@ import re
 import cookielib
 import time
 import os
+import json
 from extlibs.MTool import MTool
 
 startTeam = 1
@@ -94,6 +95,29 @@ def downloadMatchResult(years):
 
 
 		# print 'lll--%d' %len(r1)
+def checkPlayer(str1, str2):
+	if not os.path.isdir('db/'):
+		os.mkdir('db/')
+	if not os.path.exists('db/player.d'):
+		f = open('db/player.d', 'w')
+		_content = '{"num": 0, "player": []}'
+		f.write(_content)
+		f.close()
+	_file = open('db/player.d', 'r').read()
+	_json = json.loads(_file)
+	_player = _json['player']
+	_num = _json['num']
+	print _file
+	print _player
+	print _num
+
+	hasMember = False
+	for x in xrange(_num):
+		if _player[x]['pid'] == str1:
+			hasMember = True
+			break
+	if not hasMember:
+		pass
 
 def createPlayer():
 	path = 'match/scores/'
@@ -110,16 +134,28 @@ def createPlayer():
 					_fileContent = open(_fileI, 'r').read()
 					# print _fileContent
 
-					_key = '''<td height="20"><a href="player_one\.php\?id=(\d*)" target="_blank">([\d\D]{1,250})</tr>'''
-					# _key = '<table width="702" border="0" align="center" cellpadding="0" cellspacing="1" class="text">([\d\D]*)</table></td></tr>'
+					'''这个正则可以拿到包括id、名字、数据'''
+					# _key = '''<td height="20"><a href="player_one\.php\?id=(\d*)" target="_blank">([\d\D]{1,250})</tr>'''
+					_key = '<td height="20"><a href="player_one\.php\?id=(\d*)" target="_blank">([\d\D]{1,25})</a></td>'
 					_result = re.findall(_key, _fileContent)
 
-					for r in _result:
-						print r[0],r[1]
+					'''可拿详细数据,对应第一个_key'''
+					# for r in _result:
+					# 	print r[0],r[1].decode('gbk')
 
-						_keyName = '([\w]*)</a></td>'
+					# 	_keyName = '(.*)</a></td>'
+					# 	_rName = re.findall(_keyName, r[1])
+					# 	print _rName[0].decode('gbk')
+					# 	# break
+
+					for r in _result:
+						# print r
+						# print r[0],r[1].decode('gbk')
+						_keyName = '[^\r\n\t\t]*'
 						_rName = re.findall(_keyName, r[1])
-						print _rName
+						print r[0], _rName[4].decode('gbk')
+						checkPlayer(r[0], _rName[4])
+
 						break
 					
 					break
