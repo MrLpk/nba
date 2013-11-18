@@ -5,7 +5,7 @@ import os
 import json
 from extlibs.MTool import MTool
 
-PLAYER_DATA_PATH = ''
+PLAYER_DATA_PATH = ''	
 
 def checkPlayerData(str1, str2):
 	_path = 'db/data.d'
@@ -66,7 +66,42 @@ def initPlayerData():
 	return 
 
 def start():
-	initPlayerData()
+	# initPlayerData()
+
+	years = 2011
+
+	for x in xrange(1, 2):
+
+		# print 'sleep 10 second...'
+		# time.sleep(10)
+
+		_path = u'match/date/%d/%d-%d.html' %(years, years, x)
+		f = open(_path, 'r').read()
+		# key1 = '<td width="90" height="25">(.*)</td>'
+		key1 = '<tr bgcolor=#FFD200 align="center">([\d\D]*)<tr bgcolor=#FFD200 align="center">'
+
+		r1 = re.findall(key1, f)
+		# print r1
+
+		for i in r1:
+			print i.decode('gbk')
+			break
+		print len(r1)
+		break
+		# i = 1
+		# for y in r1:
+		# 	name = '%s.html' %i
+		# 	path = 'match/scores/%d/%d/' %(years, x)
+		# 	filename = path + name
+		# 	if not os.path.exists(filename):
+		# 		_url = INDEX + y
+		# 		html = urllib2.urlopen(_url).read()
+		# 		m.save(name, html, False, path)
+		# 	else:
+		# 		print 'You already have ' + filename
+
+		# 	i+=1
+			# break
 
 if __name__ == '__main__':
 	start()
