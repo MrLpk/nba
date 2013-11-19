@@ -4,6 +4,7 @@ import re
 import os
 import json
 from extlibs.MTool import MTool
+from pyquery import PyQuery as pq
 
 PLAYER_DATA_PATH = ''	
 
@@ -82,12 +83,22 @@ def start():
 
 		r1 = re.findall(key1, f)
 		# print r1
+		print _path
+		d = pq(f)
+		v = d('#table980middle')
 
-		for i in r1:
-			print i.decode('gbk')
-			break
-		print len(r1)
-		break
+		m = MTool()
+
+		m.save('1.txt', v.html().encode('utf-8'))
+		# print v.html()
+
+		# for i in r1:
+		# 	print i.decode('gbk')
+		# 	break
+		# print len(r1)
+		# break
+
+
 		# i = 1
 		# for y in r1:
 		# 	name = '%s.html' %i
@@ -105,3 +116,5 @@ def start():
 
 if __name__ == '__main__':
 	start()
+	# d = pq(url = 'http://www.powereasy.net/')
+	# print d('title').text()
