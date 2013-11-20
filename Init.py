@@ -87,6 +87,9 @@ def start():
 		d = pq(f)
 		v = d('#table980middle')
 
+		print d('tr').eq(263).html().encode('gbk')
+		# print len(d('tr'))
+		return
 		m = MTool()
 		m.save('1.txt', v.html().encode('utf-8'))
 
