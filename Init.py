@@ -88,9 +88,20 @@ def start():
 		v = d('#table980middle')
 
 		m = MTool()
-
 		m.save('1.txt', v.html().encode('utf-8'))
+
 		# print v.html()
+
+		x = pq('1.txt')
+		c = x('table').find('tr').end()
+		print c
+
+		for d in c:
+
+			print d.text()
+			break
+		print c.html()
+		
 
 		# for i in r1:
 		# 	print i.decode('gbk')
