@@ -3,13 +3,14 @@
 import re
 import os
 import json
+from PlayerScore import PlayerScore
 from extlibs.MTool import MTool
 from pyquery import PyQuery as pq
 
 PLAYER_DATA_PATH = ''	
 
-def checkPlayerData(str1, str2):
-	_path = 'db/data.d'
+def checkPlayerData(pid, data, years, month, day):
+	_path = 'db/data.db'
 	if not os.path.isdir('db/'):
 		os.mkdir('db/')
 	if not os.path.exists(_path):
@@ -20,115 +21,81 @@ def checkPlayerData(str1, str2):
 	_file = open(_path, 'r').read()
 	_json = json.loads(_file)
 
+	p = PlayerScore(data)
+	p.setDate(years, month, day)
+
 	try:
-		_player = _json[str1]
-	except Exception, e:
-		_json[str1] = str2
+		_playerData = _json[str(pid)]
+		_playerData.append(p.getObj())
+		_json[pid] = _playerData
 		_j = json.dumps(_json)
 		f = open(_path, 'w')
 		f.write(_j)
 		f.close()
-		print 'add new player %s %s success' %(str1, str2)
-	
+		print 'add player %s data success' %pid
+	except Exception, e:
+		o = [p.getObj()]
+		_json[pid] = o
+		_j = json.dumps(_json)
+		f = open(_path, 'w')
+		f.write(_j)
+		f.close()
+		print 'new player %s data success' %pid
+	print '*'*40
 
 def initPlayerData():
-	path = 'match/scores/'
-
-	for y in os.listdir(path):
-		_pathY = path + y + '/'
-		for m in xrange(1, 13):
-			_pathM = _pathY + str(m) + '/'
-			if os.path.isdir(_pathM):
-				for i in xrange(1, len(os.listdir(_pathM))+1):
-					_fileI = _pathM + str(i) + '.html'
-					# print _fileI
-
-					_fileContent = open(_fileI, 'r').read()
-					# print _fileContent
-
-					'''这个正则可以拿到包括id、名字、数据'''
-					_key = '''<td height="20"><a href="player_one\.php\?id=(\d*)" target="_blank">([\d\D]{1,250})</tr>'''
-					# _key = '<td height="20"><a href="player_one\.php\?id=(\d*)" target="_blank">([\d\D]{1,25})</a></td>'
-					_result = re.findall(_key, _fileContent)
-
-					'''可拿详细数据,对应第一个_key'''
-					for r in _result:
-						print r[0],r[1].decode('gbk')
-
-						_keyName = '(.*)</a></td>'
-						_rName = re.findall(_keyName, r[1])
-						print _rName[0].decode('gbk')
-						# checkPlayerData(r[0], 1)
-						break
-
-					break
-			break
-		break
-	return 
-
-def start():
-	# initPlayerData()
 
 	years = 2011
+	month = 0
+	day	  = 0
 
+	'''view all years '''
 	for x in xrange(1, 2):
-
-		# print 'sleep 10 second...'
-		# time.sleep(10)
-
 		_path = u'match/date/%d/%d-%d.html' %(years, years, x)
-		f = open(_path, 'r').read()
-		# key1 = '<td width="90" height="25">(.*)</td>'
-		key1 = '<tr bgcolor=#FFD200 align="center">([\d\D]*)<tr bgcolor=#FFD200 align="center">'
 
-		r1 = re.findall(key1, f)
-		# print r1
-		print _path
-		d = pq(f)
-		v = d('#table980middle')
+		_fileContent = open(_path, 'r').read()
 
-		print d('tr').eq(263).html().encode('gbk')
-		# print len(d('tr'))
-		return
-		m = MTool()
-		m.save('1.txt', v.html().encode('utf-8'))
+		d = pq(_fileContent)
+		_arr = d('tr')
 
-		# print v.html()
+		_count = 1
+		''' view all month's game '''
+		for y in xrange(1, 12):#len(_arr)):
+			_html = _arr.eq(y).html()
+			_key = '<td width="90" height="25">'
+			_result = re.findall(_key, _html)
+			if len(_result) == 1:
+				'''it include date'''
+				_k = u'([\d]{2})月([\d]{2})日'
+				_r = re.findall(_k, _html)
+				
+				month = int(_r[0][0])
+				day   = int(_r[0][1])
+				# print '-'*20
+			else:
+				'''it include match score'''
+				__path = 'match/scores/%d/%d/%d.html' %(years, month, _count)
+				
+				_count+=1
 
-		x = pq('1.txt')
-		c = x('table').find('tr').end()
-		print c
+				_matchContent = open(__path, 'r').read()
+				'''这个正则可以拿到包括id、名字、数据'''
+				__key = '''<td height="20"><a href="player_one\.php\?id=(\d*)" target="_blank">([\d\D]{1,250})</tr>'''
+				__result = re.findall(__key, _matchContent)
 
-		for d in c:
+				'''可拿详细数据,对应第一个_key'''
+				for __r in __result:
+					_pid = int(__r[0])
+ 
+					_data = re.findall('<td>([\d-]*)</td>', __r[1])
+					# print _pid
+					# print __r[1].decode('gbk')
+					# print _data
+					checkPlayerData(_pid, _data, years, month, day)
+				
 
-			print d.text()
-			break
-		print c.html()
-		
-
-		# for i in r1:
-		# 	print i.decode('gbk')
-		# 	break
-		# print len(r1)
-		# break
-
-
-		# i = 1
-		# for y in r1:
-		# 	name = '%s.html' %i
-		# 	path = 'match/scores/%d/%d/' %(years, x)
-		# 	filename = path + name
-		# 	if not os.path.exists(filename):
-		# 		_url = INDEX + y
-		# 		html = urllib2.urlopen(_url).read()
-		# 		m.save(name, html, False, path)
-		# 	else:
-		# 		print 'You already have ' + filename
-
-		# 	i+=1
-			# break
+def start():
+	initPlayerData()
 
 if __name__ == '__main__':
 	start()
-	# d = pq(url = 'http://www.powereasy.net/')
-	# print d('title').text()
