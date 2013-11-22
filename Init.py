@@ -50,7 +50,7 @@ def initPlayerData():
 	day	  = 0
 
 	'''view all years '''
-	for x in xrange(1, 2):
+	for x in xrange(1, 13):
 		_path = u'match/date/%d/%d-%d.html' %(years, years, x)
 
 		_fileContent = open(_path, 'r').read()
@@ -60,7 +60,7 @@ def initPlayerData():
 
 		_count = 1
 		''' view all month's game '''
-		for y in xrange(1, 12):#len(_arr)):
+		for y in xrange(1, len(_arr)):#12):#
 			_html = _arr.eq(y).html()
 			_key = '<td width="90" height="25">'
 			_result = re.findall(_key, _html)
@@ -74,24 +74,31 @@ def initPlayerData():
 				# print '-'*20
 			else:
 				'''it include match score'''
-				__path = 'match/scores/%d/%d/%d.html' %(years, month, _count)
-				
-				_count+=1
+				'''expect the normal match'''
 
-				_matchContent = open(__path, 'r').read()
-				'''这个正则可以拿到包括id、名字、数据'''
-				__key = '''<td height="20"><a href="player_one\.php\?id=(\d*)" target="_blank">([\d\D]{1,250})</tr>'''
-				__result = re.findall(__key, _matchContent)
+				_r1 = re.findall(u'<td>常规赛</td>', _html)
+				_r2 = re.findall(u'<td>季后赛</td>', _html)
+				if len(_r1) == 1 or len(_r2) == 1:
 
-				'''可拿详细数据,对应第一个_key'''
-				for __r in __result:
-					_pid = int(__r[0])
+					__path = 'match/scores/%d/%d/%d.html' %(years, month, _count)
+					_count+=1
+
+					_matchContent = open(__path, 'r').read()
+					'''这个正则可以拿到包括id、名字、数据'''
+					__key = '''<td height="20"><a href="player_one\.php\?id=(\d*)" target="_blank">([\d\D]{1,250})</tr>'''
+					__result = re.findall(__key, _matchContent)
+
+					'''可拿详细数据,对应第一个_key'''
+					for __r in __result:
+						_pid = int(__r[0])
  
-					_data = re.findall('<td>([\d-]*)</td>', __r[1])
-					# print _pid
-					# print __r[1].decode('gbk')
-					# print _data
-					checkPlayerData(_pid, _data, years, month, day)
+						_data = re.findall('<td>([\d-]*)</td>', __r[1])
+						# print _pid
+						# print __r[1].decode('gbk')
+						# print _data
+						checkPlayerData(_pid, _data, years, month, day)
+				else:
+					print '跳过非常规赛or季后赛场次 -- %d年-%d月-%d日' %(years, month, day)
 				
 
 def start():

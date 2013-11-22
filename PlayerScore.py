@@ -26,6 +26,27 @@ class PlayerScore(object):
 	
 	def getObj(self):
 		obj = {
+				# 'time':self.time,
+				# 'shoot':self.shoot,
+				# 'three':self.three,
+				# 'freeThrow':self.freeThrow,
+				# 'frontRebound':self.frontRebound,
+				# 'backRebound':self.backRebound,
+				'r':int(self.allRebound),
+				'a':int(self.assists),
+				's':int(self.steal),
+				'b':int(self.black),
+				't':int(self.turnOver),
+				'f':int(self.fouls),
+				'p':int(self.points),
+				'y':int(self.year),
+				'm':int(self.month),
+				'd':int(self.day),
+			}
+		return obj
+
+	def getAllObj(self):
+		obj = {
 				'time':self.time,
 				'shoot':self.shoot,
 				'three':self.three,
