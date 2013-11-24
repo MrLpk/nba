@@ -23,6 +23,9 @@ class PlayerScore(object):
 		self.year	= year
 		self.month	= month
 		self.day	= day
+
+	def setPlayoffs(self, n):
+		self.playoffs = n
 	
 	def getObj(self):
 		obj = {
@@ -42,6 +45,7 @@ class PlayerScore(object):
 				'y':int(self.year),
 				'm':int(self.month),
 				'd':int(self.day),
+				'po':int(self.playoffs)
 			}
 		return obj
 

@@ -9,8 +9,9 @@ from pyquery import PyQuery as pq
 
 PLAYER_DATA_PATH = ''	
 
-def checkPlayerData(pid, data, years, month, day):
-	_path = 'db/data.db'
+def checkPlayerData(pid, data, years, month, day, i, n, playoffs):
+	'''save'''
+	_path = 'db/%d/%d.db' %(n, pid)
 	if not os.path.isdir('db/'):
 		os.mkdir('db/')
 	if not os.path.exists(_path):
@@ -23,6 +24,7 @@ def checkPlayerData(pid, data, years, month, day):
 
 	p = PlayerScore(data)
 	p.setDate(years, month, day)
+	p.setPlayoffs(playoffs)
 
 	try:
 		_playerData = _json[str(pid)]
@@ -32,7 +34,7 @@ def checkPlayerData(pid, data, years, month, day):
 		f = open(_path, 'w')
 		f.write(_j)
 		f.close()
-		print 'add player %s data success' %pid
+		print u'add player %s data success  --- %d年-%d月-%d日  ---%d次' %(pid, years, month, day, i)
 	except Exception, e:
 		o = [p.getObj()]
 		_json[pid] = o
@@ -40,17 +42,18 @@ def checkPlayerData(pid, data, years, month, day):
 		f = open(_path, 'w')
 		f.write(_j)
 		f.close()
-		print 'new player %s data success' %pid
+		print u'new player %s data success  --- %d年-%d月-%d日  ---%d次' %(pid, years, month, day, i)
 	print '*'*40
 
-def initPlayerData():
+def initPlayerData(years, smonth, emonth, n):
 
-	years = 2011
+	# years = 2011
 	month = 0
 	day	  = 0
+	i = 1
 
 	'''view all years '''
-	for x in xrange(1, 13):
+	for x in xrange(smonth, emonth+1):
 		_path = u'match/date/%d/%d-%d.html' %(years, years, x)
 
 		_fileContent = open(_path, 'r').read()
@@ -60,7 +63,7 @@ def initPlayerData():
 
 		_count = 1
 		''' view all month's game '''
-		for y in xrange(1, len(_arr)):#12):#
+		for y in xrange(1, len(_arr)):#224):#
 			_html = _arr.eq(y).html()
 			_key = '<td width="90" height="25">'
 			_result = re.findall(_key, _html)
@@ -81,7 +84,7 @@ def initPlayerData():
 				if len(_r1) == 1 or len(_r2) == 1:
 
 					__path = 'match/scores/%d/%d/%d.html' %(years, month, _count)
-					_count+=1
+					
 
 					_matchContent = open(__path, 'r').read()
 					'''这个正则可以拿到包括id、名字、数据'''
@@ -93,16 +96,23 @@ def initPlayerData():
 						_pid = int(__r[0])
  
 						_data = re.findall('<td>([\d-]*)</td>', __r[1])
-						# print _pid
-						# print __r[1].decode('gbk')
-						# print _data
-						checkPlayerData(_pid, _data, years, month, day)
+						checkPlayerData(_pid, _data, years, month, day, i, n, len(_r2))
+
+
+						i+=1
 				else:
-					print '跳过非常规赛or季后赛场次 -- %d年-%d月-%d日' %(years, month, day)
-				
+					print u'跳过非常规赛or季后赛场次 -- %d年-%d月-%d日' %(years, month, day)
+				_count+=1
 
 def start():
-	initPlayerData()
+	''' 2011-2012赛季 '''
+	# initPlayerData(2011, 12, 12, 1)
+	# initPlayerData(2012, 1, 6, 1)
 
+	''' 2012-2013赛季 '''
+	# initPlayerData(2012, 9, 12, 2)
+	# initPlayerData(2013, 1, 6, 2)
+
+	# initPlayerData(2012, 2, 2)
 if __name__ == '__main__':
 	start()
