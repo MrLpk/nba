@@ -1,7 +1,0 @@
-<td width="90" height="25">01月01日星期六</td>&#13;&#13;
-		<td width="45">类型</td><td width="60">客队</td>&#13;&#13;
-		<td width="50">比分</td><td width="60">主队</td>&#13;&#13;
-		<td>客队最高分</td><td>主队最高分</td>&#13;&#13;
-		<td width="40">战报</td><td width="40">统计</td>&#13;&#13;
-		<td width="40">视频</td><td width="40">组图</td><td width="250">网络视频/电视直播</td>&#13;&#13;
-	

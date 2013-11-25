@@ -35,9 +35,9 @@ class P(object):
 			if len(items) > 2:
 				_score = _score - _hscore - _lscore
 				_times -= 2
-			''' 计算平均分 '''
-			print ' tt -- ', _times
-			_point = _score / float(_times)
+		''' 计算平均分 '''
+		print ' tt -- ', _times
+		_point = _score / float(_times)
 
 		return _point
 
@@ -61,37 +61,36 @@ class P(object):
 				if len(items) > 2:
 					_score = _score - _hscore - _lscore
 					_times -= 2
-				''' 计算平均分 '''
-				print ' tt -- ', _times
-				_point = _score / float(_times)
+		''' 计算平均分 '''
+		print ' tt -- ', _times
+		_point = _score / float(_times)
 
 		return _point
 
 	def start(self):
 		_path = 'db/1/'
-		# print len(os.listdir(_path))
-
 		_data = []
 		_count = 1
+
 		for x in os.listdir(_path):
-			_p = _path + x#'3704.db'
+			if x == '.DS_Store':
+				continue
+			_p = _path + '3704.db'
+			# print 'path:',  _p
 			_f = open(_p, 'r').read()
 			_json = json.loads(_f)
 
-			
 			'''view one player'''
 			for i in _json:
-				print 'pid -- ', i
 				_point = self.count(_json[i])
-
-				# print _point
-				# print _hscore
-				# print _lscore
-				_o = {i:_point}
+				_playoffsP = self.count_playoffs(_json[i])
+				_o = {i:[{'n':_point}, {'o':_playoffsP}]}
 				_data.append(_o)
-			 	print u'%s -- %d -- %d times' %(i, _point, _count)
+			 	print u'%s -- %f -- %d times' %(i, _point, _count)
+			 	print u'%s -- %f -- %d times' %(i, _playoffsP, _count)
 			 	_count+=1
 			# break
+			return
 		_json = json.dumps({'p':_data})
 		m = MTool()
 		m.save(self.path, _json)
@@ -104,7 +103,7 @@ class P(object):
 		self.s = 0.7
 		self.r = 0.65
 		self.t = -0.8
-		self.path = 'db/1/case1.db'
+		self.path = 'db/case1.db'
 
 if __name__ == '__main__':
 	# start()
