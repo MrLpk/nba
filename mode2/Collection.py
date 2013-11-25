@@ -116,9 +116,9 @@ def getMatch():
 	# m = MTool()
 	# m.save('1.html', _tbody.eq(0).html().encode('utf-8'))
 def start():
-	# getData()
+	getAverage()
 	# getMatch()
-	getTr(1)
+	# getTr(1)
 
 if __name__ == '__main__':
 	start()
