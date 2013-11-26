@@ -115,6 +115,11 @@ def getMatch():
 
 	# m = MTool()
 	# m.save('1.html', _tbody.eq(0).html().encode('utf-8'))
+def collectionAllTeam():
+	for x in xrange(1,31):
+		zhuURL = 'http://liansai.500.com/lq/177/team/%d/schedule_%d/' %(x, 1)
+		keURL  = 'http://liansai.500.com/lq/177/team/%d/schedule_%d/' %(x, 2)
+		
 def start():
 	getAverage()
 	# getMatch()
