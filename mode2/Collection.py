@@ -2,6 +2,7 @@
 
 import urllib2
 import re
+import json
 from pyquery import PyQuery as pq
 from MTool import MTool
 
@@ -115,15 +116,100 @@ def getMatch():
 
 	# m = MTool()
 	# m.save('1.html', _tbody.eq(0).html().encode('utf-8'))
+
+def collectionOneTeam(HTMl, isHome = True):
+	_tables = pq(HTMl)('.tb')
+	_table = _tables.eq(0).html()
+	_trs = pq(_table)('tr')
+
+	_data = []
+	for x in xrange(len(_trs)-1, -1, -1):
+		_tr = _trs.eq(x).html()
+		_result = re.findall(u'<td>常规赛</td>', _tr)
+		if len(_result) == 1:
+			_r = re.findall('<td>(\d{2})-(\d{2}) ', _tr)
+			_month = int(_r[0][0])
+			_day = int(_r[0][1])
+			_r = re.findall('red">(\d*)-(\d*)</b></td>', _tr)
+			if isHome:
+				_wScore = int(_r[0][1])
+				_lScore = int(_r[0][0])
+			else:
+				_wScore = int(_r[0][0])
+				_lScore = int(_r[0][1])
+			_obj = {'m':_month, 'd':_day, 'l':_lScore, 'w':_wScore}
+			_data.append(_obj)
+
+	return _data
+
 def collectionAllTeam():
+	''' view all teams '''
 	for x in xrange(1,31):
 		zhuURL = 'http://liansai.500.com/lq/177/team/%d/schedule_%d/' %(x, 1)
 		keURL  = 'http://liansai.500.com/lq/177/team/%d/schedule_%d/' %(x, 2)
-		
+
+		_zhuContent = urllib2.urlopen(zhuURL).read()
+		_keContent  = urllib2.urlopen(keURL).read()
+
+		_zhuObj = collectionOneTeam(_zhuContent)
+		_keObj  = collectionOneTeam(_keContent, False)
+
+		_obj = {'t':_zhuObj, 'f':_keObj}
+		_json = json.dumps(_obj)
+		m = MTool()
+		m.save('db/%d.dt' %x, _json)
+
+def count(obj, key):
+	_hScore = 0
+	_lScore = 9999
+	_aScore = 0
+	_times  = 0
+	for _item in obj:
+		x = _item[key]
+		_aScore += x
+		if x > _hScore:
+			_hScore = x
+		if x < _lScore:
+			_lScore = x
+		_times += 1
+		print 'x --', x
+	if len(obj) > 2:
+		_aScore = _aScore - _hScore - _lScore
+		_times -= 2
+	_eScore = _aScore / float(_times)
+	return _eScore
+
+def countScore(obj):
+	return count(obj, 'w'), count(obj, 'l')
+
+def countOneTeam(obj):
+	_t = obj['t']
+	_tw = count(_t, 'w')
+	# _tw, _tl = countScore(_t)
+
+	# print '%f -- %f' %(_tw, _tl)
+
+	# _f = obj['f']
+	# _fw, _fl = countScore(_t)
+	# print '%f -- %f' %(_fw, _fl)
+
+def countAllTeam():
+	for x in xrange(1,31):
+		PATH = 'db/%d.dt' %x
+		_json = open(PATH, 'r').read()
+		_obj = json.loads(_json)
+
+		countOneTeam(_obj) 
+
+
+		break
+
 def start():
-	getAverage()
+	# getAverage()
 	# getMatch()
 	# getTr(1)
+	# collectionAllTeam()
+	countAllTeam()
 
 if __name__ == '__main__':
 	start()
