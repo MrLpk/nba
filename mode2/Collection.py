@@ -180,14 +180,18 @@ def count(obj, key):
 	return _eScore
 
 def countScore(obj):
-	return count(obj, 'w'), count(obj, 'l')
+	tw = count(obj, 'w')
+	tf = count(obj, 'l')
+	print 'tw --', tw
+	print 'tf --', tf
+	return tw, tf
 
 def countOneTeam(obj):
 	_t = obj['t']
-	_tw = count(_t, 'w')
-	# _tw, _tl = countScore(_t)
+	# _tw = count(_t, 'l')
+	_tw, _tl = countScore(_t)
 
-	# print '%f -- %f' %(_tw, _tl)
+	print '%f -- %f' %(_tw, _tl)
 
 	# _f = obj['f']
 	# _fw, _fl = countScore(_t)
@@ -205,11 +209,11 @@ def countAllTeam():
 		break
 
 def start():
-	# getAverage()
+	getAverage()
 	# getMatch()
 	# getTr(1)
 	# collectionAllTeam()
-	countAllTeam()
+	# countAllTeam()
 
 if __name__ == '__main__':
 	start()
