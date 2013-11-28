@@ -172,7 +172,6 @@ def count(obj, key):
 		if x < _lScore:
 			_lScore = x
 		_times += 1
-		print 'x --', x
 	if len(obj) > 2:
 		_aScore = _aScore - _hScore - _lScore
 		_times -= 2
@@ -180,40 +179,73 @@ def count(obj, key):
 	return _eScore
 
 def countScore(obj):
-	tw = count(obj, 'w')
-	tf = count(obj, 'l')
-	print 'tw --', tw
-	print 'tf --', tf
-	return tw, tf
+	return count(obj, 'w'), count(obj, 'l')
 
 def countOneTeam(obj):
 	_t = obj['t']
-	# _tw = count(_t, 'l')
 	_tw, _tl = countScore(_t)
+	# print '%f -- %f' %(_tw, _tl)
 
-	print '%f -- %f' %(_tw, _tl)
-
-	# _f = obj['f']
-	# _fw, _fl = countScore(_t)
+	_f = obj['f']
+	_fw, _fl = countScore(_f)
 	# print '%f -- %f' %(_fw, _fl)
+	return {'t':{'w':_tw, 'l':_tl}, 'f':{'w':_fw, 'l':_fl}}
 
 def countAllTeam():
+	_allTeam = []
 	for x in xrange(1,31):
 		PATH = 'db/%d.dt' %x
 		_json = open(PATH, 'r').read()
 		_obj = json.loads(_json)
 
-		countOneTeam(_obj) 
+		_result = countOneTeam(_obj) 
+		_allTeam.append({str(x):_result})
+		# break
+	_json = json.dumps(_allTeam)
+	m = MTool()
+	m.save('AScore.dt', _json)
 
+def countAllAverage():
+	PATH = 'AScore.dt'
+	_twAllScore = 0
+	_tlAllScore = 0
+	_fwAllScore = 0
+	_flAllScore = 0
+	_times = 0
+	_content = open(PATH, 'r').read()
+	_object = json.loads(_content)
+	for _item in _object:
+		for x in _item:
+			x = _item[x]
+			# print x
+			_twAllScore += x['t']['w']
+			_tlAllScore += x['t']['l']
+			_fwAllScore += x['f']['w']
+			_flAllScore += x['f']['l']
+			_times += 1
 
-		break
+	_twAverageScore = _twAllScore / float(_times)
+	_tlAverageScore = _tlAllScore / float(_times)
+	_fwAverageScore = _fwAllScore / float(_times)
+	_flAverageScore = _flAllScore / float(_times)
+	print '-'*40
+
+	_str = {'tw':_twAverageScore,
+			'tl':_tlAverageScore,
+			'fw':_fwAverageScore,
+			'fl':_flAverageScore
+			}
+	_json = json.dumps(_str)
+	m = MTool()
+	m.save('Average.dt', _json)
 
 def start():
-	getAverage()
+	# getAverage()
 	# getMatch()
 	# getTr(1)
 	# collectionAllTeam()
 	# countAllTeam()
+	countAllAverage()
 
 if __name__ == '__main__':
 	start()
