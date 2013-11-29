@@ -80,43 +80,6 @@ def getTr(num):
 def getTl():
 	pass
 
-def getMatch():
-	URL = 'http://liansai.500.com/lq/177/proc/'
-	_lDate = ''
-	_cDate = ''
-	_lMatch = []
-	_cMatch = []
-	_content = urllib2.urlopen(URL).read()
-
-	d = pq(_content)
-	_tbody = d('tbody')
-		
-	_trs = pq(_tbody.eq(0).html())('tr')
-	for x in xrange(len(_trs)):
-		_tr = _trs.eq(x).html()
-		_r = re.findall('<td>VS</td>', _tr)
-		if len(_r) == 1:
-			_r = re.findall('<td>([\d-]*) ', _tr)
-			if _cDate == '':
-				''' make sure today '''
-				_cDate = _r[0]
-				_cMatch.append(_tr)
-
-				''' make sure yesterday '''
-				if x == 1:
-					print "it's first day now,you have not fix it"
-				else:
-					pass
-			elif _r[0] == _cDate:
-				_cMatch.append(_tr)
-
-	for x in _cMatch:
-		print x
-
-
-	# m = MTool()
-	# m.save('1.html', _tbody.eq(0).html().encode('utf-8'))
-
 def collectionOneTeam(HTMl, isHome = True):
 	_tables = pq(HTMl)('.tb')
 	_table = _tables.eq(0).html()
@@ -172,6 +135,7 @@ def count(obj, key):
 		if x < _lScore:
 			_lScore = x
 		_times += 1
+	''' make the point more secience '''
 	if len(obj) > 2:
 		_aScore = _aScore - _hScore - _lScore
 		_times -= 2
@@ -184,14 +148,14 @@ def countScore(obj):
 def countOneTeam(obj):
 	_t = obj['t']
 	_tw, _tl = countScore(_t)
-	# print '%f -- %f' %(_tw, _tl)
 
 	_f = obj['f']
 	_fw, _fl = countScore(_f)
-	# print '%f -- %f' %(_fw, _fl)
+
 	return {'t':{'w':_tw, 'l':_tl}, 'f':{'w':_fw, 'l':_fl}}
 
 def countAllTeam():
+	''' count every team's point '''
 	_allTeam = []
 	for x in xrange(1,31):
 		PATH = 'db/%d.dt' %x
@@ -206,6 +170,7 @@ def countAllTeam():
 	m.save('AScore.dt', _json)
 
 def countAllAverage():
+	''' count the average of all '''
 	PATH = 'AScore.dt'
 	_twAllScore = 0
 	_tlAllScore = 0
@@ -228,7 +193,6 @@ def countAllAverage():
 	_tlAverageScore = _tlAllScore / float(_times)
 	_fwAverageScore = _fwAllScore / float(_times)
 	_flAverageScore = _flAllScore / float(_times)
-	print '-'*40
 
 	_str = {'tw':_twAverageScore,
 			'tl':_tlAverageScore,
@@ -239,13 +203,68 @@ def countAllAverage():
 	m = MTool()
 	m.save('Average.dt', _json)
 
+def getMatch():
+	URL = 'http://liansai.500.com/lq/177/proc/'
+	_lDate = ''
+	_cDate = ''
+	_lMatch = []
+	_cMatch = []
+	_content = urllib2.urlopen(URL).read()
+
+	d = pq(_content)
+	_tbody = d('tbody')
+		
+	_trs = pq(_tbody.eq(0).html())('tr')
+	''' find the new game '''
+	for x in xrange(len(_trs)):
+		_tr = _trs.eq(x).html()
+		_r = re.findall('<td>VS</td>', _tr)
+		if len(_r) == 1:
+			_r = re.findall('<td>([\d-]*) ', _tr)
+			if _cDate == '':
+				''' make sure today '''
+				_cDate = _r[0]
+				_cMatch.append(_tr)
+
+				''' make sure yesterday '''
+				if x == 1:
+					print "it's first day now,you have not fix it"
+				else:
+					pass
+			elif _r[0] == _cDate:
+				_cMatch.append(_tr)
+
+	return _cMatch
+
+def countOneTeamPoint(team, isHome):
+	_AScore = open('AScore.dt', 'r').read()
+	_Average = open('Average.dt', 'r').read()
+	here
+
+def countOneMatch(teamT, teamF):
+	countOneTeamPoint(teamT, True)
+	countOneTeamPoint(teamF, False)
+
+def countAllMatch(_match):
+	for x in _match:
+		_r = re.findall('team/(\d*)/" ', x)
+		print x
+		print _r
+		countOneMatch(_r[0], _r[1])
+		break
+
+def getResult():
+	_match = getMatch()
+	countAllMatch(_match)
+
 def start():
 	# getAverage()
-	# getMatch()
 	# getTr(1)
 	# collectionAllTeam()
 	# countAllTeam()
-	countAllAverage()
+	# countAllAverage()
+	# getMatch()
+	getResult()
 
 if __name__ == '__main__':
 	start()
