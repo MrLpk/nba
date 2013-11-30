@@ -204,7 +204,8 @@ def countAllAverage():
 	m.save('Average.dt', _json)
 
 def getMatch():
-	URL = 'http://liansai.500.com/lq/177/proc/'
+	# URL = 'http://liansai.500.com/lq/177/proc/'
+	URL = 'http://liansai.500.com/lq/177/proc/980/0_2013_12/'
 	_lDate = ''
 	_cDate = ''
 	_lMatch = []
@@ -239,13 +240,16 @@ def getMatch():
 def countOneTeamPoint(team, isHome):
 	_AScore = open('AScore.dt', 'r').read()
 	_Average = open('Average.dt', 'r').read()
-	here
+	_obj = json.loads(_AScore)
+	print _obj[int(team)-1][team]['t']
+	print _obj[int(team)-1][team]['f']
 
 def countOneMatch(teamT, teamF):
 	countOneTeamPoint(teamT, True)
 	countOneTeamPoint(teamF, False)
 
 def countAllMatch(_match):
+	print 'b'
 	for x in _match:
 		_r = re.findall('team/(\d*)/" ', x)
 		print x
