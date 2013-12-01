@@ -237,25 +237,64 @@ def getMatch():
 
 	return _cMatch
 
-def countOneTeamPoint(team, isHome):
+def getOneTeamPoint(team, isHome):
 	_AScore = open('AScore.dt', 'r').read()
-	_Average = open('Average.dt', 'r').read()
 	_obj = json.loads(_AScore)
-	print _obj[int(team)-1][team]['t']
-	print _obj[int(team)-1][team]['f']
 
-def countOneMatch(teamT, teamF):
-	countOneTeamPoint(teamT, True)
-	countOneTeamPoint(teamF, False)
+	_wPoint = 0
+	_lPoint = 0
+	if isHome:
+		_wPoint = _obj[int(team)-1][team]['t']['w']
+		_lPoint = _obj[int(team)-1][team]['t']['l']
+	else:
+		_wPoint = _obj[int(team)-1][team]['f']['w']
+		_lPoint = _obj[int(team)-1][team]['f']['l']
+
+	return _wPoint, _lPoint
+
+def getAveragePoint():
+	_Average = open('Average.dt', 'r').read()
+	_obj = json.loads(_Average)
+	return _obj['tl'], _obj['fl']
+def getPan():
+	URL = 'http://trade.500.com/jclq/index.php?playid=277'
+	_content = urllib2.urlopen(URL).read()
+	_content = pq(_content)('.dc_table').eq(1).html()
+	_trs = pq(_content)('tr')
+	for x in xrange(len(_trs)):
+		_tr = _trs.eq(x).html()
+		_r = re.findall('177/team/(\d*)/', _tr)
+		print 'f', _r[0]
+		print 't', _r[1]
+		_r = re.findall('<strong class="eng variable">([\d.]*)</strong>', _tr)
+		print _r
+		print '*'*40
+
+
+
+def countOneMatch(teamF, teamT):
+	_tw, _tl = getOneTeamPoint(teamT, True)
+	_fw, _fl = getOneTeamPoint(teamF, False)
+	_atl, _afl = getAveragePoint()
+	#主队主场平均得分+（客队客场平均失分-联盟客场平均失分）+客队客场平均得分+（主队主场平均失分-联盟主场平均失分）
+	_sum = _tw + (_fl - _afl) + _fw + (_tl - _atl)
+	print teamF, ':', 'win -', _fw, ',lose -', _fl
+	# print _fw, _fl
+	print teamT, ':', 'win -', _tw, ',lose -', _tl
+	# print _tw, _tl
+	print 'average:', 'win -', _atl, ',lose -', _afl
+	# print _atl, _afl
+	print 'sum point'
+	print _sum 
+	print '*'*50
 
 def countAllMatch(_match):
-	print 'b'
 	for x in _match:
+		_r = re.findall('blank">(.*)</a></td>', x)
+		print _r[0], 'vs', _r[1]
 		_r = re.findall('team/(\d*)/" ', x)
-		print x
-		print _r
 		countOneMatch(_r[0], _r[1])
-		break
+		# break
 
 def getResult():
 	_match = getMatch()
@@ -268,7 +307,8 @@ def start():
 	# countAllTeam()
 	# countAllAverage()
 	# getMatch()
-	getResult()
+	# getResult()
+	getPan()
 
 if __name__ == '__main__':
 	start()
