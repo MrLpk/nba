@@ -279,32 +279,29 @@ def getPanPoint(teamF, teamT):
 			return _r[0]
 
 def isAgain(num):
+	''' see the team has match yesterday '''
 	_content = getPan(True)
-	# print _content
+	_content = pq(_content)('#seldate').eq(0).html()
+	_r = re.findall('<option value="(.*)"', _content)[1]
+	URL = 'http://trade.500.com/jclq/index.php?playid=277&date=%s' %_r
 
-	_content = pq('option').eq(0).html()
-	print _content
-	# m = MTool()
-	# m.save('1.html', _content.decode('gbk').encode('utf-8'))
-	return
+	_content = urllib2.urlopen(URL).read()
+	_content = pq(_content)('.dc_table').eq(1).html()
 	_trs = pq(_content)('tr')
 	for x in xrange(len(_trs)):
 		_tr = _trs.eq(x).html()
 		_r = re.findall('177/team/(\d*)/', _tr)
-		# print 'f', _r[0]
-		# print 't', _r[1]
-		_r = re.findall('<strong class="eng variable">([\d.]*)</strong>', _tr)
-		print _r
-		print '*'*40
-
+		if _r[0] == str(num) or _r[1] == str(num):
+			print num, 'has match yesterday'
+			return True
 
 def countOneMatch(teamF, teamT):
 	_tw, _tl = getOneTeamPoint(teamT, True)
 	_fw, _fl = getOneTeamPoint(teamF, False)
-	_pan = getPanPoint(teamF, teamT)
+	# _pan = getPanPoint(teamF, teamT)
 	_atl, _afl = getAveragePoint()
 	_sum = _tw + (_fl - _afl) + _fw + (_tl - _atl)
-	_sub = float(_sum) - float(_pan)
+	# _sub = float(_sum) - float(_pan)
 
 	print teamF, ':', 'win -', _fw, ',lose -', _fl
 	# print _fw, _fl
@@ -315,14 +312,16 @@ def countOneMatch(teamF, teamT):
 	print 'sum point'
 	print _sum 
 	print 'pan point'
-	print _pan
-	print 'sub :', _sub
-	if _sub > 0:
-		print '预测大'
-	elif _sub < 0:
-		print '预测小'
-	else:
-		print '平分'
+	# print _pan
+	# print 'sub :', _sub
+	# if _sub > 0:
+	# 	print '预测大'
+	# elif _sub < 0:
+	# 	print '预测小'
+	# else:
+	# 	print '平分'
+	isAgain(teamF)
+	isAgain(teamT)
 	print '*'*50
 
 def countAllMatch(_match):
@@ -344,8 +343,8 @@ def start():
 	# countAllTeam()
 	# countAllAverage()
 	# getMatch()
-	# getResult()
-	isAgain(1)
+	getResult()
+	# isAgain(18)
 
 
 if __name__ == '__main__':
