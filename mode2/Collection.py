@@ -256,36 +256,73 @@ def getAveragePoint():
 	_Average = open('Average.dt', 'r').read()
 	_obj = json.loads(_Average)
 	return _obj['tl'], _obj['fl']
-def getPan():
+
+def getPan(wantR = False):
 	URL = 'http://trade.500.com/jclq/index.php?playid=277'
 	_content = urllib2.urlopen(URL).read()
-	_content = pq(_content)('.dc_table').eq(1).html()
+
+	if not wantR:
+		_content = pq(_content)('.dc_table').eq(0).html()
+
+	return _content
+
+def getPanPoint(teamF, teamT):
+	_content = getPan()
 	_trs = pq(_content)('tr')
 	for x in xrange(len(_trs)):
 		_tr = _trs.eq(x).html()
 		_r = re.findall('177/team/(\d*)/', _tr)
-		print 'f', _r[0]
-		print 't', _r[1]
+		# print 'f', _r[0]
+		# print 't', _r[1]
+		if _r[0] == teamF and _r[1] == teamT:
+			_r = re.findall('<strong class="eng variable">([\d.]*)</strong>', _tr)
+			return _r[0]
+
+def isAgain(num):
+	_content = getPan(True)
+	# print _content
+
+	_content = pq('option').eq(0).html()
+	print _content
+	# m = MTool()
+	# m.save('1.html', _content.decode('gbk').encode('utf-8'))
+	return
+	_trs = pq(_content)('tr')
+	for x in xrange(len(_trs)):
+		_tr = _trs.eq(x).html()
+		_r = re.findall('177/team/(\d*)/', _tr)
+		# print 'f', _r[0]
+		# print 't', _r[1]
 		_r = re.findall('<strong class="eng variable">([\d.]*)</strong>', _tr)
 		print _r
 		print '*'*40
 
 
-
 def countOneMatch(teamF, teamT):
 	_tw, _tl = getOneTeamPoint(teamT, True)
 	_fw, _fl = getOneTeamPoint(teamF, False)
+	_pan = getPanPoint(teamF, teamT)
 	_atl, _afl = getAveragePoint()
-	#主队主场平均得分+（客队客场平均失分-联盟客场平均失分）+客队客场平均得分+（主队主场平均失分-联盟主场平均失分）
 	_sum = _tw + (_fl - _afl) + _fw + (_tl - _atl)
+	_sub = float(_sum) - float(_pan)
+
 	print teamF, ':', 'win -', _fw, ',lose -', _fl
 	# print _fw, _fl
 	print teamT, ':', 'win -', _tw, ',lose -', _tl
 	# print _tw, _tl
-	print 'average:', 'win -', _atl, ',lose -', _afl
+	print 'average:', 'tl -', _atl, ',fl -', _afl
 	# print _atl, _afl
 	print 'sum point'
 	print _sum 
+	print 'pan point'
+	print _pan
+	print 'sub :', _sub
+	if _sub > 0:
+		print '预测大'
+	elif _sub < 0:
+		print '预测小'
+	else:
+		print '平分'
 	print '*'*50
 
 def countAllMatch(_match):
@@ -308,7 +345,8 @@ def start():
 	# countAllAverage()
 	# getMatch()
 	# getResult()
-	getPan()
+	isAgain(1)
+
 
 if __name__ == '__main__':
 	start()
