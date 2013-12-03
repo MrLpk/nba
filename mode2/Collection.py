@@ -262,7 +262,7 @@ def getPan(wantR = False):
 	_content = urllib2.urlopen(URL).read()
 
 	if not wantR:
-		_content = pq(_content)('.dc_table').eq(0).html()
+		_content = pq(_content)('.dc_table').eq(1).html()
 
 	return _content
 
@@ -274,6 +274,7 @@ def getPanPoint(teamF, teamT):
 		_r = re.findall('177/team/(\d*)/', _tr)
 		# print 'f', _r[0]
 		# print 't', _r[1]
+		# print _tr
 		if _r[0] == teamF and _r[1] == teamT:
 			_r = re.findall('<strong class="eng variable">([\d.]*)</strong>', _tr)
 			return _r[0]
@@ -298,10 +299,10 @@ def isAgain(num):
 def countOneMatch(teamF, teamT):
 	_tw, _tl = getOneTeamPoint(teamT, True)
 	_fw, _fl = getOneTeamPoint(teamF, False)
-	# _pan = getPanPoint(teamF, teamT)
+	_pan = getPanPoint(teamF, teamT)
 	_atl, _afl = getAveragePoint()
 	_sum = _tw + (_fl - _afl) + _fw + (_tl - _atl)
-	# _sub = float(_sum) - float(_pan)
+	_sub = float(_sum) - float(_pan)
 
 	print teamF, ':', 'win -', _fw, ',lose -', _fl
 	# print _fw, _fl
@@ -312,14 +313,14 @@ def countOneMatch(teamF, teamT):
 	print 'sum point'
 	print _sum 
 	print 'pan point'
-	# print _pan
-	# print 'sub :', _sub
-	# if _sub > 0:
-	# 	print '预测大'
-	# elif _sub < 0:
-	# 	print '预测小'
-	# else:
-	# 	print '平分'
+	print _pan
+	print 'sub :', _sub
+	if _sub > 0:
+		print u'预测大'
+	elif _sub < 0:
+		print u'预测小'
+	else:
+		print u'平分'
 	isAgain(teamF)
 	isAgain(teamT)
 	print '*'*50
