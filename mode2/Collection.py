@@ -299,9 +299,13 @@ def isAgain(num):
 def countOneMatch(teamF, teamT):
 	_tw, _tl = getOneTeamPoint(teamT, True)
 	_fw, _fl = getOneTeamPoint(teamF, False)
-	_pan = getPanPoint(teamF, teamT)
 	_atl, _afl = getAveragePoint()
 	_sum = _tw + (_fl - _afl) + _fw + (_tl - _atl)
+	try:
+		_pan = getPanPoint(teamF, teamT)
+	except Exception, e:
+		_pan = 0
+		print 'getPan failed'
 	_sub = float(_sum) - float(_pan)
 
 	print teamF, ':', 'win -', _fw, ',lose -', _fl
@@ -321,8 +325,8 @@ def countOneMatch(teamF, teamT):
 		print u'预测小'
 	else:
 		print u'平分'
-	isAgain(teamF)
-	isAgain(teamT)
+	# isAgain(teamF)
+	# isAgain(teamT)
 	print '*'*50
 
 def countAllMatch(_match):
