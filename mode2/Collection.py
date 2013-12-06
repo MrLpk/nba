@@ -279,8 +279,22 @@ def isAgain(num):
 			return True
 
 
+def collectMatch(startYear, endYear):
+	m = MTool()
 
+	for x in xrange(10,13):
+		URL = 'http://liansai.500.com/lq/177/proc/980/0_%d_%d/' %(startYear, x)
+		print URL
+		_content = urllib2.urlopen(URL).read()
+		_name = 'match/%d-%d.html' %(startYear, x)
+		m.save(_name, _content)
 
+	for x in xrange(1, 5):
+		URL = 'http://liansai.500.com/lq/177/proc/980/0_%d_%d/' %(endYear, x)
+		print URL
+		_content = urllib2.urlopen(URL).read()
+		_name = 'match/%d-%d.html' %(endYear, x)
+		m.save(_name, _content)
 
 
 

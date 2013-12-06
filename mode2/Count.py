@@ -1,25 +1,30 @@
 #coding=utf-8
 import Collection as COL
 from MTool import MTool
+import urllib2
+from pyquery import PyQuery as pq
+import re, json
 
 m = MTool()
-date = m.getTime('%m-%d')
+m_sDate = m.getTime('%m-%d-%H')
+m_lDate = m_sDate.split('-')
 
 def updata():
 	COL.collectionAllTeam()
 
 def checkDate():
 	_cof = open('cof', 'r').read()
-	if _cof == str(date):
+	_temp = _cof.split('-')
+	if _temp[0] == m_lDate[0] and _temp[1] == m_lDate[1] and int(_temp[2]) >=15:
 		print 'The version is newest --', _cof
 	else:
 		print 'local version --', _cof
 		print 'start to update version...'
 		updata()
 		f = open('cof', 'w')
-		f.write(str(date))
+		f.write(str(m_sDate))
 		f.close()
-		print 'update version success, now the version is,', date
+		print 'update version success, now the version is,', m_sDate
 
 def getOneTeamPoint(team, isHome):
 	_AScore = open('AScore.dt', 'r').read()
@@ -80,7 +85,43 @@ def countAllMatch(_match):
 		print _r[0], 'vs', _r[1]
 		_r = re.findall('team/(\d*)/" ', x)
 		countOneMatch(_r[0], _r[1])
-		# break
+
+def itos(num):
+	if num == 0:
+		return '0'
+	elif num < 10:
+		return '0%d' %num
+	else:
+		return str(num)
+
+def getMatch(_year = 0, _month = 0, _day = 0):
+
+	_cMatch 	  = []
+	_content	  = ''
+	_sNewGameDate = ''
+	# URL = 'http://liansai.500.com/lq/177/proc/'
+	if _year == 0 or _month == 0 or _day == 0:
+		URL = 'http://liansai.500.com/lq/177/proc/980/0_2013_12/'
+		_content = urllib2.urlopen(URL).read()
+		_sNewGameDate = m.getTime('%m-%d', m.sumTime(24))
+	else:
+		_content = open('match/%d-%d.html' %(_year, _month), 'r').read()
+		_sNewGameDate = '%s-%s' %(itos(_year), itos(_month))
+
+		
+	d = pq(_content)
+	_tbody = d('tbody')
+	
+	_trs = pq(_tbody.eq(0).html())('tr')
+	''' find the new game '''
+	for x in xrange(len(_trs)):
+		_tr = _trs.eq(x).html()
+		_r = re.findall('<td>%s ' %_sNewGameDate, _tr)
+		if len(_r) == 1:
+			''' add the game '''
+			_cMatch.append(_tr)
+
+	return _cMatch
 
 def getResult():
 	_match = getMatch()
@@ -92,3 +133,12 @@ def count():
 
 if __name__ == '__main__':
 	count()
+
+
+
+
+
+
+	# COL.collectMatch(2013, 2014)
+
+	

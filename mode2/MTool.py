@@ -54,9 +54,19 @@ class MTool:
         result = urllib2.urlopen(url).read()
         self.save(name, result, reNew, path)
 
-    def getTime(self, _str = '''%Y-%m-%d %H:%M:%S'''):
-        t = time.strftime(_str, time.localtime())
+    def getTime(self, _str = '%Y-%m-%d %H:%M:%S', _t = time.localtime()):
+        t = time.strftime(_str, _t)
         return t
+
+    def sumTime(self, _hour = 0, _min = 0, _sec = 0):
+        t = time.time()
+        t += (3600*_hour + 60*_min + _sec)
+        return time.localtime(t)
+
+    def subTime(self, _hour = 0, _min = 0, _sec = 0):
+        t = time.time()
+        t -= (3600*_hour + 60*_min + _sec)
+        return time.localtime(t)
 
 if __name__ == '__main__':
     pass
