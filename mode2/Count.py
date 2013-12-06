@@ -45,7 +45,31 @@ def getAveragePoint():
 	_Average = open('Average.dt', 'r').read()
 	_obj = json.loads(_Average)
 	return _obj['tl'], _obj['fl']
-	
+
+def getPan(wantR = False):
+	URL = 'http://trade.500.com/jclq/index.php?playid=277'
+	_content = urllib2.urlopen(URL).read()
+
+	if not wantR:
+		_content = pq(_content)('.dc_table').eq(1).html()
+
+	return _content
+
+def getPanPoint(teamF, teamT):
+	_content = getPan()
+	_trs = pq(_content)('tr')
+	for x in xrange(len(_trs)):
+		_tr = _trs.eq(x).html()
+		_r = re.findall('177/team/(\d*)/', _tr)
+		# print 'f', _r[0]
+		# print 't', _r[1]
+		# print _tr.encode('utf-8')
+		if len(_r) < 2:
+			continue
+		if _r[0] == teamF and _r[1] == teamT:
+			_r = re.findall('<strong class="eng variable">([\d.]*)</strong>', _tr)
+			return _r[0]
+
 def countOneMatch(teamF, teamT):
 	_tw, _tl = getOneTeamPoint(teamT, True)
 	_fw, _fl = getOneTeamPoint(teamF, False)
@@ -56,14 +80,12 @@ def countOneMatch(teamF, teamT):
 	except Exception, e:
 		_pan = 0
 		print 'getPan failed'
+		print e
 	_sub = float(_sum) - float(_pan)
 
 	print teamF, ':', 'win -', _fw, ',lose -', _fl
-	# print _fw, _fl
 	print teamT, ':', 'win -', _tw, ',lose -', _tl
-	# print _tw, _tl
 	print 'average:', 'tl -', _atl, ',fl -', _afl
-	# print _atl, _afl
 	print 'sum point'
 	print _sum 
 	print 'pan point'
