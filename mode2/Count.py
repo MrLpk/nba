@@ -11,7 +11,8 @@ m_lDate = m_sDate.split('-')
 
 def updata():
 	COL.collectionAllTeam()
-
+	COL.countAllTeam()
+	COL.countAllAverage()
 def checkDate():
 	_cof = open('cof', 'r').read()
 	_temp = _cof.split('-')

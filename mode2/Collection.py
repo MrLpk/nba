@@ -91,8 +91,13 @@ def collectionOneTeam(HTMl, isHome = True):
 		_result = re.findall(u'<td>常规赛</td>', _tr)
 		if len(_result) == 1:
 			_r = re.findall('<td>(\d{2})-(\d{2}) ', _tr)
+			_year = 0
 			_month = int(_r[0][0])
 			_day = int(_r[0][1])
+			if _month > 9:
+				_year = 2013
+			else:
+				_year = 2014
 			_r = re.findall('red">(\d*)-(\d*)</b></td>', _tr)
 			if isHome:
 				_wScore = int(_r[0][1])
@@ -100,7 +105,7 @@ def collectionOneTeam(HTMl, isHome = True):
 			else:
 				_wScore = int(_r[0][0])
 				_lScore = int(_r[0][1])
-			_obj = {'m':_month, 'd':_day, 'l':_lScore, 'w':_wScore}
+			_obj = {'y':_year, 'm':_month, 'd':_day, 'l':_lScore, 'w':_wScore}
 			_data.append(_obj)
 
 	return _data
@@ -122,11 +127,40 @@ def collectionAllTeam():
 		m = MTool()
 		m.save('db/%d.dt' %x, _json)
 
+def sort(obj, key):
+	_items = []
+	for _item in obj:
+		x = _item[key]
+		_items.append(x)
+		
+	for x in xrange(len(_items)-1):
+		for y in xrange(len(_items)-1):
+			if _items[y] > _items[y+1]:
+				_temp = _items[y]
+				_items[y] = _items[y+1]
+				_items[y+1] = _temp
+
+	return _items
+
 def count(obj, key):
 	_hScore = 0
 	_lScore = 9999
 	_aScore = 0
 	_times  = 0
+
+	_items = sort(obj, key)
+	_num = len(_items)
+	_num06 = _num * 0.6
+
+	if _num%2 == 0:
+		if not _num06%2 == 0:
+			_num06 = int(_num06+1)
+	else:
+		if _num06%2 == 0:
+			_num06 = int(_num06+1)
+
+	print _num, _num06
+
 	for _item in obj:
 		x = _item[key]
 		_aScore += x
@@ -164,7 +198,7 @@ def countAllTeam():
 
 		_result = countOneTeam(_obj) 
 		_allTeam.append({str(x):_result})
-		# break
+		return
 	_json = json.dumps(_allTeam)
 	m = MTool()
 	m.save('AScore.dt', _json)
@@ -302,10 +336,10 @@ def start():
 	# getAverage()
 	# getTr(1)
 	# collectionAllTeam()
-	# countAllTeam()
+	countAllTeam()
 	# countAllAverage()
 	# getMatch()
-	getResult()
+	# getResult()
 	# isAgain(18)
 
 
