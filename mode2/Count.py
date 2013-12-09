@@ -6,8 +6,6 @@ from pyquery import PyQuery as pq
 import re, json
 
 m = MTool()
-m_sDate = m.getTime('%m-%d-%H')
-m_lDate = m_sDate.split('-')
 
 def updata():
 	COL.collectionAllTeam()
@@ -15,13 +13,19 @@ def updata():
 	COL.countAllAverage()
 def checkDate():
 	_cof = open('cof', 'r').read()
-	_temp = _cof.split('-')
+	
+	m_sDate = m.getTime('%Y-%m-%d')
+	m_sDate += ' 15:00:00'
+	print m_sDate
+	m_lDate = m_sDate.split('-')
 	if _temp[0] == m_lDate[0] and _temp[1] == m_lDate[1] and int(_temp[2]) >=15:
+
 		print 'The version is newest --', _cof
 	else:
 		print 'local version --', _cof
 		print 'start to update version...'
-		updata()
+
+		# updata()
 		f = open('cof', 'w')
 		f.write(str(m_sDate))
 		f.close()
@@ -152,12 +156,14 @@ def getResult():
 
 def count():
 	checkDate()
-	getResult()
+	# getResult()
 
 if __name__ == '__main__':
-	count()
-
-
+	# count()
+	from datetime import *
+	date = datetime.today()
+	r1 = date.replace(hour = 15, minute = 0, second = 0)
+	print r1
 
 
 
