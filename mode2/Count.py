@@ -4,32 +4,50 @@ from MTool import MTool
 import urllib2
 from pyquery import PyQuery as pq
 import re, json
+from datetime import datetime
+import time
 
 m = MTool()
 
-def updata():
+def update():
 	COL.collectionAllTeam()
 	COL.countAllTeam()
 	COL.countAllAverage()
-def checkDate():
-	_cof = open('cof', 'r').read()
+
+def save(_content):
+	f = open('cof', 'w')
+	f.write(str(_content))
+	f.close()
+
+def isNeedUpdate():
+	_sYTime = open('cof', 'r').read()
 	
-	m_sDate = m.getTime('%Y-%m-%d')
-	m_sDate += ' 15:00:00'
-	print m_sDate
-	m_lDate = m_sDate.split('-')
-	if _temp[0] == m_lDate[0] and _temp[1] == m_lDate[1] and int(_temp[2]) >=15:
+	_temps = datetime.today()
+	_temp = _temps.replace(hour = 15, minute = 0, second = 0)
+	_sSTime = time.mktime(_temp.timetuple())
 
-		print 'The version is newest --', _cof
-	else:
-		print 'local version --', _cof
+	_nSubTime = _sSTime - float(_sYTime)
+	_nCHour = str(_temps.time()).split(':')[0]
+	_nCHour = int(_nCHour)
+	if _nSubTime >= 86400:
+		save(time.mktime(_temps.timetuple()))
+		return True, m.getTime(_t = _temps.timetuple())
+	elif _nSubTime <86400 and _nSubTime >=0:
+		if _nCHour >= 15:
+			save(time.mktime(_temps.timetuple()))
+			return True, m.getTime(_t = _temps.timetuple())
+	return False, m.getTime(_t = time.localtime(float(_sYTime)))
+
+def checkData():
+	_var , _t = isNeedUpdate()
+	if _var:
 		print 'start to update version...'
+		update()
+		print 'update version success,the version is', _t
+	else:
+		print 'The version is newest', _t
+		
 
-		# updata()
-		f = open('cof', 'w')
-		f.write(str(m_sDate))
-		f.close()
-		print 'update version success, now the version is,', m_sDate
 
 def getOneTeamPoint(team, isHome):
 	_AScore = open('AScore.dt', 'r').read()
@@ -80,12 +98,18 @@ def countOneMatch(teamF, teamT):
 	_fw, _fl = getOneTeamPoint(teamF, False)
 	_atl, _afl = getAveragePoint()
 	_sum = _tw + (_fl - _afl) + _fw + (_tl - _atl)
+	_pan = 0
 	try:
 		_pan = getPanPoint(teamF, teamT)
 	except Exception, e:
 		_pan = 0
 		print 'getPan failed'
 		print e
+
+	if _pan == None:
+		_pan = 0
+		print 'getPan failed'
+		
 	_sub = float(_sum) - float(_pan)
 
 	print teamF, ':', 'win -', _fw, ',lose -', _fl
@@ -155,15 +179,15 @@ def getResult():
 	countAllMatch(_match)
 
 def count():
-	checkDate()
-	# getResult()
+	checkData()
+	getResult()
 
 if __name__ == '__main__':
-	# count()
-	from datetime import *
-	date = datetime.today()
-	r1 = date.replace(hour = 15, minute = 0, second = 0)
-	print r1
+	count()
+	# update()
+	# _sYDate = open('cof', 'r').read()
+
+
 
 
 

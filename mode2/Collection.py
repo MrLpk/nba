@@ -150,43 +150,50 @@ def count(obj, key):
 
 	_items = sort(obj, key)
 	_num = len(_items)
-	_num06 = _num * 0.6
-
+	_num06 = int(_num * 0.6)
+	
 	if _num%2 == 0:
 		if not _num06%2 == 0:
 			_num06 = int(_num06+1)
 	else:
 		if _num06%2 == 0:
 			_num06 = int(_num06+1)
+	_n1 = (_num - _num06)*0.5
+	_n1 = int(_n1)
+	_nl = _items[_n1]
+	_nh = _items[_n1-1+_num06]
 
-	print _num, _num06
-
-	for _item in obj:
-		x = _item[key]
+	for _item in _items:
+		x = _item
 		_aScore += x
 		if x > _hScore:
 			_hScore = x
 		if x < _lScore:
 			_lScore = x
 		_times += 1
+
 	''' make the point more secience '''
 	if len(obj) > 2:
 		_aScore = _aScore - _hScore - _lScore
 		_times -= 2
 	_eScore = _aScore / float(_times)
-	return _eScore
+	return _eScore, _nh, _nl
 
 def countScore(obj):
 	return count(obj, 'w'), count(obj, 'l')
 
 def countOneTeam(obj):
 	_t = obj['t']
-	_tw, _tl = countScore(_t)
+	_tw, _twh, _twl = count(_t, 'w')
+	_tl, _tlh, _tll = count(_t, 'l')
 
 	_f = obj['f']
-	_fw, _fl = countScore(_f)
+	_fw, _fwh, _fwl = count(_f, 'w')
+	_fl, _flh, _fll = count(_f, 'l')
 
-	return {'t':{'w':_tw, 'l':_tl}, 'f':{'w':_fw, 'l':_fl}}
+	return {'t':{'w':_tw, 'wh':_twh, 'wl':_twl, 'l':_tl, 'lh':_tlh, 'll':_tll}, 
+			'f':{'w':_fw, 'wh':_fwh, 'wl':_fwl, 'l':_fl, 'lh':_flh, 'll':_fll}
+		   }
 
 def countAllTeam():
 	''' count every team's point '''
@@ -198,7 +205,7 @@ def countAllTeam():
 
 		_result = countOneTeam(_obj) 
 		_allTeam.append({str(x):_result})
-		return
+
 	_json = json.dumps(_allTeam)
 	m = MTool()
 	m.save('AScore.dt', _json)
@@ -345,3 +352,4 @@ def start():
 
 if __name__ == '__main__':
 	start()
+	# print 6.6%2
