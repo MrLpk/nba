@@ -112,14 +112,14 @@ def countOneMatch(teamF, teamT):
 		
 	_sub = float(_sum) - float(_pan)
 
-	print teamF, ':', 'win -', _fw, ',lose -', _fl
-	print teamT, ':', 'win -', _tw, ',lose -', _tl
-	print 'average:', 'tl -', _atl, ',fl -', _afl
-	print 'sum point'
-	print _sum 
-	print 'pan point'
-	print _pan
-	print 'sub :', _sub
+	print '%s\t\twin - %.2f,\tlose - %.2f' %(teamF, _fw, _fl)
+	print '%s\t\twin - %.2f,\tlose - %.2f' %(teamT, _tw, _tl)
+	print 'average\t\ttl - %.2f,\tfl - %.2f' %(_atl, _afl)
+	print 'sum point\t%.2f' %_sum
+	# print _sum 
+	print 'pan point\t%.2f' %_pan
+	# print _pan
+	print 'sub\t\t%.2f:' %_sub
 	if _sub > 0:
 		print u'预测大'
 	elif _sub < 0:
@@ -157,7 +157,7 @@ def getMatch(_year = 0, _month = 0, _day = 0):
 		_sNewGameDate = m.getTime('%m-%d', m.sumTime(24))
 	else:
 		_content = open('match/%d-%d.html' %(_year, _month), 'r').read()
-		_sNewGameDate = '%s-%s' %(itos(_year), itos(_month))
+		_sNewGameDate = '%s-%s' %(itos(_month), itos(_day))
 
 		
 	d = pq(_content)
@@ -175,7 +175,7 @@ def getMatch(_year = 0, _month = 0, _day = 0):
 	return _cMatch
 
 def getResult():
-	_match = getMatch()
+	_match = getMatch(2013, 12, 11)
 	countAllMatch(_match)
 
 def count():
