@@ -183,12 +183,13 @@ def count():
 	getResult()
 
 if __name__ == '__main__':
-	count()
+	# count()
 	# update()
 	# _sYDate = open('cof', 'r').read()
 
-
-
+	n = 8
+	f = int(n*0.5)
+	print f
 
 
 

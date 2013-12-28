@@ -179,6 +179,59 @@ def count(obj, key):
 	_eScore = _aScore / float(_times)
 	return _eScore, _nh, _nl
 
+def count1(obj, key):
+	" mean, median, lmedian, rmedian"
+	_hScore = 0
+	_lScore = 9999
+	_aScore = 0
+	_times  = 0
+
+	_items = sort(obj, key)
+	_num = len(_items)
+	_medianNum = int(_num * 0.5)
+	_lmedianNum = 0
+	_rmedianNum = 0
+	_median = 0
+	_lmedian = 0
+	_rmedian = 0
+	_num06 = int(_num * 0.6)
+	
+	if _num%2 == 0:
+		_tempNum =* 0.5 
+	else:
+		_tempNum = (_medianNum*1) + 1
+		_tempNum = int(_tempNum*0.5)
+		_median = _items[_medianNum]
+		if _medianNum%2 == 0:
+			_lmedian = _items[_tempNum]
+			_rmedianNum = _items[_medianNum + _tempNum]
+		else:
+			_lmedian = (_items[_tempNum] + _items[_tempNum-1])*0.5
+			_rmedianNum = (_items[_medianNum + _tempNum] + _items[_medianNum + _tempNum-1])*0.5
+
+		
+	_n1 = (_num - _num06)*0.5
+	_n1 = int(_n1)
+	_nl = _items[_n1]
+	_nh = _items[_n1-1+_num06]
+
+	' mean '
+	for _item in _items:
+		x = _item
+		_aScore += x
+		if x > _hScore:
+			_hScore = x
+		if x < _lScore:
+			_lScore = x
+		_times += 1
+
+	''' make the point more secience '''
+	if len(obj) > 2:
+		_aScore = _aScore - _hScore - _lScore
+		_times -= 2
+	mean = _aScore / float(_times)
+	return mean, _nh, _nl
+
 def countScore(obj):
 	return count(obj, 'w'), count(obj, 'l')
 
