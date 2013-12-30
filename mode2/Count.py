@@ -117,7 +117,7 @@ def countOneMatch(teamF, teamT):
 	print 'average\t\ttl - %.2f,\tfl - %.2f' %(_atl, _afl)
 	print 'sum point\t%.2f' %_sum
 	# print _sum 
-	print 'pan point\t%.2f' %_pan
+	# print 'pan point\t%.2f' %_pan
 	# print _pan
 	print 'sub\t\t%.2f:' %_sub
 	if _sub > 0:
@@ -175,7 +175,7 @@ def getMatch(_year = 0, _month = 0, _day = 0):
 	return _cMatch
 
 def getResult():
-	_match = getMatch(2013, 12, 11)
+	_match = getMatch()#2013, 12, 11)
 	countAllMatch(_match)
 
 def count():
@@ -183,13 +183,9 @@ def count():
 	getResult()
 
 if __name__ == '__main__':
-	# count()
+	count()
 	# update()
 	# _sYDate = open('cof', 'r').read()
-
-	n = 8
-	f = int(n*0.5)
-	print f
 
 
 

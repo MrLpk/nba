@@ -187,33 +187,37 @@ def count1(obj, key):
 	_times  = 0
 
 	_items = sort(obj, key)
+
+
 	_num = len(_items)
 	_medianNum = int(_num * 0.5)
-	_lmedianNum = 0
-	_rmedianNum = 0
 	_median = 0
 	_lmedian = 0
 	_rmedian = 0
-	_num06 = int(_num * 0.6)
-	
+
+	if _num <= 2:
+		print 'items must more then 3'
+		return 
+
 	if _num%2 == 0:
-		_tempNum =* 0.5 
-	else:
-		_tempNum = (_medianNum*1) + 1
-		_tempNum = int(_tempNum*0.5)
-		_median = _items[_medianNum]
+		_median = (_items[_medianNum] + _items[_medianNum-1])*0.5
+		_tempNum = int(_medianNum * 0.5)
+
 		if _medianNum%2 == 0:
 			_lmedian = _items[_tempNum]
-			_rmedianNum = _items[_medianNum + _tempNum]
+			_rmedian = _items[(_medianNum) + _tempNum - 1]
+		else:
+			_lmedian = (_items[_tempNum] + _items[_tempNum+1]) * 0.5
+			_rmedian = (_items[_medianNum-1+_tempNum] + _items[_medianNum+_tempNum]) * 0.5
+	else:
+		_median  = _items[_medianNum]
+		_tempNum = int((_medianNum+1) * 0.5)
+		if _medianNum%2 == 0:
+			_lmedian = _items[_tempNum]
+			_rmedian = _items[_medianNum + _tempNum]
 		else:
 			_lmedian = (_items[_tempNum] + _items[_tempNum-1])*0.5
-			_rmedianNum = (_items[_medianNum + _tempNum] + _items[_medianNum + _tempNum-1])*0.5
-
-		
-	_n1 = (_num - _num06)*0.5
-	_n1 = int(_n1)
-	_nl = _items[_n1]
-	_nh = _items[_n1-1+_num06]
+			_rmedian = (_items[_medianNum + _tempNum] + _items[_medianNum + _tempNum-1])*0.5
 
 	' mean '
 	for _item in _items:
@@ -230,7 +234,20 @@ def count1(obj, key):
 		_aScore = _aScore - _hScore - _lScore
 		_times -= 2
 	mean = _aScore / float(_times)
-	return mean, _nh, _nl
+	return mean, _median, _lmedian, _rmedian
+
+def countOneTeam1(obj):
+	_t = obj['t']
+	_tw, _twm, _twlm, _twrm = count1(_t, 'w')
+	_tl, _tlm, _tllm, _tlrm = count1(_t, 'l')
+
+	_f = obj['f']
+	_fw, _fwm, _fwlm, _fwrm = count1(_f, 'w')
+	_fl, _flm, _fllm, _flrm = count1(_f, 'l')
+
+	return {'t':{'w':_tw, 'wm':_twm, 'wlm':_twlm, 'wrm':_twrm, 'l':_tl, 'lm':_tlm, 'llm':_tllm, 'lrm':_tlrm}, 
+			'f':{'w':_fw, 'wm':_fwm, 'wlm':_fwlm, 'wrm':_fwrm, 'l':_fl, 'lm':_flm, 'llm':_fllm, 'lrm':_flrm}
+		   }
 
 def countScore(obj):
 	return count(obj, 'w'), count(obj, 'l')
@@ -256,7 +273,7 @@ def countAllTeam():
 		_json = open(PATH, 'r').read()
 		_obj = json.loads(_json)
 
-		_result = countOneTeam(_obj) 
+		_result = countOneTeam1(_obj) 
 		_allTeam.append({str(x):_result})
 
 	_json = json.dumps(_allTeam)
