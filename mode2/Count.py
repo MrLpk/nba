@@ -62,6 +62,8 @@ def getOneTeamPoint(team, isHome):
 		_wPoint = _obj[int(team)-1][team]['f']['w']
 		_lPoint = _obj[int(team)-1][team]['f']['l']
 
+	_tObj = _obj[int(team)-1][team]['t']
+	_fObj = _obj[int(team)-1][team]['f']
 	return _wPoint, _lPoint
 
 def getAveragePoint():
@@ -131,6 +133,11 @@ def countOneMatch(teamF, teamT):
 	print '*'*50
 
 def countAllMatch(_match):
+
+	if len(_match) == 0:
+		print 'not match today'
+		return
+
 	for x in _match:
 		_r = re.findall('blank">(.*)</a></td>', x)
 		print _r[0], 'vs', _r[1]
@@ -175,7 +182,7 @@ def getMatch(_year = 0, _month = 0, _day = 0):
 	return _cMatch
 
 def getResult():
-	_match = getMatch()#2013, 12, 11)
+	_match = getMatch(2014, 1, 1)
 	countAllMatch(_match)
 
 def count():
