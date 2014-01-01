@@ -55,16 +55,17 @@ def getOneTeamPoint(team, isHome):
 
 	_wPoint = 0
 	_lPoint = 0
+	_extObj = 0
 	if isHome:
 		_wPoint = _obj[int(team)-1][team]['t']['w']
 		_lPoint = _obj[int(team)-1][team]['t']['l']
+		_extObj = _obj[int(team)-1][team]['t']
 	else:
 		_wPoint = _obj[int(team)-1][team]['f']['w']
 		_lPoint = _obj[int(team)-1][team]['f']['l']
+		_extObj = _obj[int(team)-1][team]['f']
 
-	_tObj = _obj[int(team)-1][team]['t']
-	_fObj = _obj[int(team)-1][team]['f']
-	return _wPoint, _lPoint
+	return _wPoint, _lPoint, _extObj['wm'], _extObj['wlm'], _extObj['wrm'], _extObj['lm'], _extObj['llm'], _extObj['lrm']
 
 def getAveragePoint():
 	_Average = open('Average.dt', 'r').read()
@@ -96,8 +97,8 @@ def getPanPoint(teamF, teamT):
 			return _r[0]
 
 def countOneMatch(teamF, teamT):
-	_tw, _tl = getOneTeamPoint(teamT, True)
-	_fw, _fl = getOneTeamPoint(teamF, False)
+	_tw, _tl, _twm, _twlm, _twrm, _tlm, _tllm, _tlrm = getOneTeamPoint(teamT, True)
+	_fw, _fl, _fwm, _fwlm, _fwrm, _flm, _fllm, _flrm = getOneTeamPoint(teamF, False)
 	_atl, _afl = getAveragePoint()
 	_sum = _tw + (_fl - _afl) + _fw + (_tl - _atl)
 	_pan = 0
@@ -121,7 +122,7 @@ def countOneMatch(teamF, teamT):
 	# print _sum 
 	# print 'pan point\t%.2f' %_pan
 	# print _pan
-	print 'sub\t\t%.2f:' %_sub
+	print 'sub\t\t%.2f' %_sub
 	if _sub > 0:
 		print u'预测大'
 	elif _sub < 0:
@@ -130,6 +131,21 @@ def countOneMatch(teamF, teamT):
 		print u'平分'
 	# isAgain(teamF)
 	# isAgain(teamT)
+	print '_'*30
+
+	_sum2 = _twm + (_flm - _afl) + _fwm + (_tlm - _atl)
+	_sub2 = float(_sum2) - float(_pan)
+	print '%s\t\twm - %.2f,\twlm - %.2f,\twrm - %.2f,\tlose - %.2f' %(teamF, _fwm, _fwlm, _fwrm, _flm)
+	print '%s\t\twm - %.2f,\twlm - %.2f,\twrm - %.2f,\tlose - %.2f' %(teamT, _twm, _twlm, _twrm, _tlm)
+	print 'average\t\ttl - %.2f,\tfl - %.2f' %(_atl, _afl)
+	print 'sum point\t%.2f' %_sum2
+	print 'sub\t\t%.2f' %_sub2
+	if _sub2 > 0:
+		print u'预测大'
+	elif _sub2 < 0:
+		print u'预测小'
+	else:
+		print u'平分'
 	print '*'*50
 
 def countAllMatch(_match):
@@ -157,9 +173,9 @@ def getMatch(_year = 0, _month = 0, _day = 0):
 	_cMatch 	  = []
 	_content	  = ''
 	_sNewGameDate = ''
-	# URL = 'http://liansai.500.com/lq/177/proc/'
 	if _year == 0 or _month == 0 or _day == 0:
-		URL = 'http://liansai.500.com/lq/177/proc/980/0_2013_12/'
+		URL = 'http://liansai.500.com/lq/177/proc/'
+		# URL = 'http://liansai.500.com/lq/177/proc/980/0_2013_12/'
 		_content = urllib2.urlopen(URL).read()
 		_sNewGameDate = m.getTime('%m-%d', m.sumTime(24))
 	else:
@@ -182,7 +198,7 @@ def getMatch(_year = 0, _month = 0, _day = 0):
 	return _cMatch
 
 def getResult():
-	_match = getMatch(2014, 1, 1)
+	_match = getMatch(2014, 1, 2)
 	countAllMatch(_match)
 
 def count():
