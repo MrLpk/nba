@@ -390,7 +390,7 @@ def isAgain(num):
 			return True
 
 
-def collectMatch(startYear, endYear):
+def collectMatch1(startYear, endYear):
 	m = MTool()
 
 	for x in xrange(10,13):
@@ -407,6 +407,39 @@ def collectMatch(startYear, endYear):
 		_name = 'match/%d-%d.html' %(endYear, x)
 		m.save(_name, _content)
 
+def executMatch(_content):
+	d = pq(_content)
+	_tbody = d('tbody')
+	
+	_trs = pq(_tbody.eq(0).html())('tr')
+
+	''' find the new game '''
+	for x in xrange(1, len(_trs)):
+		_tr = _trs.eq(x).html()
+		_r = re.findall('blank">(.*)</a></td>', _tr)
+		print _r[0], 'vs', _r[1]
+		_r = re.findall('team/(\d*)/" ', _tr)
+		print _r[0], _r[1]
+		# break
+
+def collectMatch(startYear, endYear):
+	m = MTool()
+
+	for x in xrange(10,13):
+		URL = 'http://liansai.500.com/lq/177/proc/980/0_%d_%d/' %(startYear, x)
+		print URL
+		_content = urllib2.urlopen(URL).read()
+		executMatch(_content)
+		# _name = 'match/%d-%d.html' %(startYear, x)
+		# m.save(_name, _content)
+		break
+	return
+	for x in xrange(1, 5):
+		URL = 'http://liansai.500.com/lq/177/proc/980/0_%d_%d/' %(endYear, x)
+		print URL
+		_content = urllib2.urlopen(URL).read()
+		_name = 'match/%d-%d.html' %(endYear, x)
+		m.save(_name, _content)
 
 
 def start():
@@ -421,5 +454,6 @@ def start():
 
 
 if __name__ == '__main__':
-	start()
+	# start()
+	collectMatch(2013, 2014)
 	# print 6.6%2
