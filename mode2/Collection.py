@@ -414,14 +414,19 @@ def executMatch(_content):
 	_trs = pq(_tbody.eq(0).html())('tr')
 
 	''' find the new game '''
+	_result = []
 	for x in xrange(1, len(_trs)):
 		_tr = _trs.eq(x).html()
+		# print _tr.encode('utf-8')
 		_r = re.findall('blank">(.*)</a></td>', _tr)
 		print _r[0], 'vs', _r[1]
 		_r = re.findall('team/(\d*)/" ', _tr)
 		print _r[0], _r[1]
+		_r = re.findall('<td>(\d{2})-(\d{2}) ', _tr)
+		print _r[0][0], _r[0][1]
+		{'day':30, 'f':'01', 't':'24'}
 		# break
-
+		{'2014':['1':{},'2':{},'3':{},'4':{}],'2013':[]
 def collectMatch(startYear, endYear):
 	m = MTool()
 
