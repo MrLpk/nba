@@ -198,7 +198,7 @@ def getMatch(_year = 0, _month = 0, _day = 0):
 	return _cMatch
 
 def getResult():
-	_match = getMatch(2014, 1, 2)
+	_match = getMatch()#2014, 1, 2)
 	countAllMatch(_match)
 
 def count():
