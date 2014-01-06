@@ -80,4 +80,4 @@ def start(_teamNum):
 	_result = countOneTeam(_obj)
 
 if __name__ == '__main__':
-	start(1)
+	start(15)
